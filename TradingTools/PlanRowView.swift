@@ -28,8 +28,8 @@ struct PlanRowView: View {
             HStack(spacing: 12) {
                 Text(plan.direction.rawValue)
                     .foregroundColor(plan.direction == .long ? .green : .red)
-                Text("入 \(plan.entryPrice, specifier: \"%.2f\")")
-                Text("止损 \(plan.stopLoss, specifier: \"%.2f\")")
+                Text("入 \(String(format: "%.2f", plan.entryPrice))")
+                Text("止损 \(String(format: "%.2f", plan.stopLoss))")
             }
             .font(.footnote)
             .foregroundColor(.secondary)

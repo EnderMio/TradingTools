@@ -11,7 +11,7 @@ public class TradeRecord: NSManagedObject {
     @NSManaged public var date: Date
 }
 
-extension TradeRecord {
+extension TradeRecord : Identifiable {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<TradeRecord> {
         NSFetchRequest<TradeRecord>(entityName: "TradeRecord")
     }

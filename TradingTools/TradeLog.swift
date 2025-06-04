@@ -10,7 +10,7 @@ public class TradeLog: NSManagedObject {
     @NSManaged public var rating: Int16
 }
 
-extension TradeLog {
+extension TradeLog : Identifiable {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<TradeLog> {
         NSFetchRequest<TradeLog>(entityName: "TradeLog")
     }

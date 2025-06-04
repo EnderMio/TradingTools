@@ -13,17 +13,25 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            PlanListView(store: planStore)
-                .tabItem { Label("计划", systemImage: "list.bullet.clipboard") }
+            NavigationStack {
+                PlanListView(store: planStore)
+            }
+            .tabItem { Label("计划", systemImage: "list.bullet.clipboard") }
 
-            HoldingsView(text: $holdings)
-                .tabItem { Label("持仓", systemImage: "briefcase") }
+            NavigationStack {
+                HoldingsView(text: $holdings)
+            }
+            .tabItem { Label("持仓", systemImage: "briefcase") }
 
-            TradeRecordListView()
-                .tabItem { Label("记录", systemImage: "chart.bar") }
+            NavigationStack {
+                TradeRecordListView()
+            }
+            .tabItem { Label("记录", systemImage: "chart.bar") }
 
-            TradeLogListView()
-                .tabItem { Label("日志", systemImage: "book") }
+            NavigationStack {
+                TradeLogListView()
+            }
+            .tabItem { Label("日志", systemImage: "book") }
         }
         .tint(.purple)
     }

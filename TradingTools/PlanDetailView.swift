@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreData
 
 struct PlanDetailView: View {
     @Binding var plan: TradePlan
