@@ -3,47 +3,19 @@ import SwiftUI
 struct PlanListView: View {
     @ObservedObject var store: TradePlanStore
     @State private var showAdd = false
-    @State private var filter: PlanFilter = .all
     @State private var migrationIndices: [Int] = []
     @State private var currentMigration = 0
     @State private var showMigration = false
 
-    enum PlanFilter: String, CaseIterable, Identifiable {
-        case all = "全部"
-        case pending = "待执行"
-        case open = "持仓"
-        case closed = "已平仓"
-
-        var id: String { rawValue }
-    }
-
-    private var filteredPlans: [TradePlan] {
-        let sorted = store.plans.sorted { $0.date < $1.date }
-        switch filter {
-        case .all:
-            return sorted
-        case .pending:
-            return sorted.filter { $0.status == .pending }
-        case .open:
-            return sorted.filter { $0.status == .open }
-        case .closed:
-            return sorted.filter { $0.status == .closed }
-        }
+    private var sortedPlans: [TradePlan] {
+        store.plans.sorted { $0.date < $1.date }
     }
 
     var body: some View {
         NavigationStack {
             VStack {
-                Picker("筛选", selection: $filter) {
-                    ForEach(PlanFilter.allCases) { f in
-                        Text(f.rawValue).tag(f)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding([.horizontal, .top])
-
                 List {
-                    ForEach(filteredPlans) { plan in
+                    ForEach(sortedPlans) { plan in
                         NavigationLink(value: plan.id) {
                             PlanRowView(plan: plan)
                                 .padding(.vertical, 4)
@@ -68,7 +40,7 @@ struct PlanListView: View {
             .sheet(isPresented: $showMigration) {
                 if !migrationIndices.isEmpty {
                     let idx = migrationIndices[currentMigration]
-                    PlanMigrationView(plan: $store.plans[idx]) {
+                    PlanMigrationView(plan: store.plans[idx], store: store) {
                         advanceMigration()
                     }
                 }
@@ -87,7 +59,7 @@ struct PlanListView: View {
 
     private func prepareMigration() {
         let today = Calendar.current.startOfDay(for: Date())
-        migrationIndices = store.plans.indices.filter { store.plans[$0].date <= today }
+        migrationIndices = store.plans.indices.filter { store.plans[$0].date < today }
         currentMigration = 0
         showMigration = !migrationIndices.isEmpty
     }

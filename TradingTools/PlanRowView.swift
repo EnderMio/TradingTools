@@ -28,8 +28,12 @@ struct PlanRowView: View {
             HStack(spacing: 12) {
                 Text(plan.direction.rawValue)
                     .foregroundColor(plan.direction == .long ? .green : .red)
-                Text("入 \(String(format: "%.2f", plan.entryPrice))")
-                Text("止损 \(String(format: "%.2f", plan.stopLoss))")
+                if let e = plan.entryPrice {
+                    Text("入 \(String(format: "%.2f", e))")
+                }
+                if let sl = plan.stopLoss {
+                    Text("止损 \(String(format: "%.2f", sl))")
+                }
             }
             .font(.footnote)
             .foregroundColor(.secondary)
@@ -50,6 +54,6 @@ struct PlanRowView: View {
 
 struct PlanRowView_Previews: PreviewProvider {
     static var previews: some View {
-        PlanRowView(plan: TradePlan(symbol: "AAPL", direction: .long, entryPrice: 100, stopLoss: 90, notes: ""))
+        PlanRowView(plan: TradePlan(symbol: "AAPL", strategy: "", direction: .long, entryPrice: 100, stopLoss: 90, notes: ""))
     }
 }
