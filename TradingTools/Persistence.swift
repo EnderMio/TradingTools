@@ -137,6 +137,51 @@ struct PersistenceController {
         planRel.inverseRelationship = recsRel
         recsRel.inverseRelationship = planRel
 
+        // TradeRecord entity
+        let tRecordEntity = NSEntityDescription()
+        tRecordEntity.name = "TradeRecord"
+        tRecordEntity.managedObjectClassName = NSStringFromClass(TradeRecord.self)
+
+        var tRecordProps: [NSPropertyDescription] = []
+
+        let trId = NSAttributeDescription()
+        trId.name = "id"
+        trId.attributeType = .UUIDAttributeType
+        trId.isOptional = false
+        tRecordProps.append(trId)
+
+        let trPlan = NSAttributeDescription()
+        trPlan.name = "planID"
+        trPlan.attributeType = .UUIDAttributeType
+        trPlan.isOptional = false
+        tRecordProps.append(trPlan)
+
+        let trEntry = NSAttributeDescription()
+        trEntry.name = "entryPrice"
+        trEntry.attributeType = .doubleAttributeType
+        trEntry.isOptional = false
+        tRecordProps.append(trEntry)
+
+        let trExit = NSAttributeDescription()
+        trExit.name = "exitPrice"
+        trExit.attributeType = .doubleAttributeType
+        trExit.isOptional = false
+        tRecordProps.append(trExit)
+
+        let trQty = NSAttributeDescription()
+        trQty.name = "quantity"
+        trQty.attributeType = .doubleAttributeType
+        trQty.isOptional = false
+        tRecordProps.append(trQty)
+
+        let trDate = NSAttributeDescription()
+        trDate.name = "date"
+        trDate.attributeType = .dateAttributeType
+        trDate.isOptional = false
+        tRecordProps.append(trDate)
+
+        tRecordEntity.properties = tRecordProps
+
         // TradeLog entity
         let logEntity = NSEntityDescription()
         logEntity.name = "TradeLog"
@@ -176,7 +221,7 @@ struct PersistenceController {
 
         logEntity.properties = logProps
 
-        model.entities = [planEntity, recordEntity, logEntity]
+        model.entities = [planEntity, recordEntity, tRecordEntity, logEntity]
 
         container = NSPersistentContainer(name: "TradingToolsModel", managedObjectModel: model)
 
