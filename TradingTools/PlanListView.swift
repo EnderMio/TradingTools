@@ -10,10 +10,13 @@ struct PlanListView: View {
                 ForEach(store.plans) { plan in
                     NavigationLink(value: plan.id) {
                         PlanRowView(plan: plan)
+                            .padding(.vertical, 4)
                     }
+                    .listRowSeparator(.hidden)
                 }
                 .onDelete(perform: store.delete)
             }
+            .listStyle(.insetGrouped)
             .navigationTitle("交易计划")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

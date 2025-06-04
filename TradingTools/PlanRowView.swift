@@ -4,7 +4,7 @@ struct PlanRowView: View {
     let plan: TradePlan
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text(plan.symbol)
                     .font(.headline)
@@ -13,9 +13,20 @@ struct PlanRowView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            Text("\(plan.direction.rawValue) 入场: \(plan.entryPrice, specifier: \"%.2f\")")
-                .font(.subheadline)
+            HStack(spacing: 12) {
+                Text(plan.direction.rawValue)
+                Text("入 \(plan.entryPrice, specifier: \"%.2f\")")
+                Text("止损 \(plan.stopLoss, specifier: \"%.2f\")")
+                Text("止盈 \(plan.takeProfit, specifier: \"%.2f\")")
+            }
+            .font(.footnote)
+            .foregroundColor(.secondary)
         }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color(.secondarySystemBackground))
+        )
     }
 }
 
