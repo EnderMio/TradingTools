@@ -27,6 +27,7 @@ struct PlanDetailView: View {
         Form {
             Section(header: Text("基本信息")) {
                 TextField("品种", text: $plan.symbol)
+                TextField("策略", text: $plan.strategy)
                 Picker("方向", selection: $plan.direction) {
                     ForEach(TradeDirection.allCases) { dir in
                         Text(dir.rawValue).tag(dir)
@@ -34,14 +35,21 @@ struct PlanDetailView: View {
                 }
                 DatePicker("日期", selection: $plan.date, displayedComponents: .date)
                 DatePicker("操作时间", selection: $plan.actionTime, displayedComponents: .hourAndMinute)
-                TextField("入场价", value: $plan.entryPrice, format: .number)
-                TextField("止损价", value: $plan.stopLoss, format: .number)
+                TextField("入场价", value: Binding(get: { plan.entryPrice ?? 0 }, set: { plan.entryPrice = $0 }), format: .number)
+                TextField("止损价", value: Binding(get: { plan.stopLoss ?? 0 }, set: { plan.stopLoss = $0 }), format: .number)
+                TextField("止盈价", value: Binding(get: { plan.takeProfitPrice ?? 0 }, set: { plan.takeProfitPrice = $0 }), format: .number)
+                TextField("仓位", value: Binding(get: { plan.quantity ?? 0 }, set: { plan.quantity = $0 }), format: .number)
                 TextField("止盈条件", text: $plan.takeProfitCondition)
+                Picker("计划操作", selection: $plan.plannedAction) {
+                    ForEach(PlanAction.allCases) { ac in
+                        Text(ac.rawValue).tag(ac)
+                    }
+                }
             }
             Section(header: Text("备注")) {
                 TextField("备注", text: $plan.notes, axis: .vertical)
             }
-            Section(header: Text("状态")) {
+            Section(header: Text("今日操作")) {
                 Picker("状态", selection: $plan.status) {
                     ForEach(TradeStatus.allCases) { status in
                         Text(status.rawValue).tag(status)
@@ -97,7 +105,7 @@ struct PlanDetailView: View {
 
 struct PlanDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        PlanDetailView(plan: .constant(TradePlan(symbol: "TSLA", direction: .long, entryPrice: 100, stopLoss: 90, notes: "")))
+        PlanDetailView(plan: .constant(TradePlan(symbol: "TSLA", strategy: "", direction: .long, entryPrice: 100, stopLoss: 90, notes: "")))
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }

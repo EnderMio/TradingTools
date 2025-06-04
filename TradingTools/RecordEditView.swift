@@ -46,6 +46,6 @@ struct RecordEditView: View {
 }
 
 #Preview {
-    RecordEditView(plan: TradePlan(symbol: "AAPL", direction: .long, entryPrice: 10, stopLoss: 9, notes: ""))
+    RecordEditView(plan: TradePlan(symbol: "AAPL", strategy: "", direction: .long, entryPrice: 10, stopLoss: 9, notes: ""))
         .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }
