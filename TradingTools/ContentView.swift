@@ -16,7 +16,7 @@ struct ContentView: View {
             PlanListView(store: planStore)
                 .tabItem { Label("计划", systemImage: "list.bullet.clipboard") }
 
-            StepEditor(title: "持仓", text: $holdings)
+            HoldingsView(text: $holdings)
                 .tabItem { Label("持仓", systemImage: "briefcase") }
 
             TradeRecordListView()
@@ -25,6 +25,7 @@ struct ContentView: View {
             TradeLogListView()
                 .tabItem { Label("日志", systemImage: "book") }
         }
+        .tint(.purple)
     }
 }
 

@@ -16,7 +16,7 @@ class TradePlanStore: ObservableObject {
     func load() {
         guard let data = try? Data(contentsOf: fileURL) else { return }
         if let items = try? JSONDecoder().decode([TradePlan].self, from: data) {
-            plans = items
+            plans = items.sorted { $0.date < $1.date }
         }
     }
 
@@ -27,6 +27,7 @@ class TradePlanStore: ObservableObject {
 
     func add(_ plan: TradePlan) {
         plans.append(plan)
+        plans.sort { $0.date < $1.date }
         save()
     }
 
