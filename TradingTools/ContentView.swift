@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var model = RecapModel()
+    @StateObject private var planStore = TradePlanStore()
     
     var body: some View {
         TabView {
@@ -22,8 +23,12 @@ struct ContentView: View {
                 .tabItem { Label("持仓", systemImage: "briefcase") }
             StepEditor(title: "选股", text: $model.selection)
                 .tabItem { Label("选股", systemImage: "list.bullet.rectangle") }
-            StepEditor(title: "制定计划", text: $model.plan)
-                .tabItem { Label("计划", systemImage: "calendar") }
+
+            PlanListView(store: planStore)
+                .tabItem { Label("计划", systemImage: "list.bullet.clipboard") }
+
+            StepEditor(title: "复盘", text: $model.plan)
+                .tabItem { Label("复盘", systemImage: "calendar") }
         }
     }
 }
