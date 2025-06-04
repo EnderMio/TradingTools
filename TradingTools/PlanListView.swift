@@ -1,83 +1,80 @@
 import SwiftUI
 
 struct PlanListView: View {
-    @ObservedObject var store: TradePlanStore
-    @State private var showAdd = false
-    @State private var migrationIndices: [Int] = []
-    @State private var currentMigration = 0
-    @State private var showMigration = false
-
-    private var sortedPlans: [TradePlan] {
-        store.plans.sorted { $0.date < $1.date }
-    }
+    @ObservedObject var store: PlanStore
+    @State private var showAddPlan = false
+    @State private var pendingMigrations: [Plan] = []
+    @State private var currentIndex = 0
+    @State private var showMigrationSheet = false
 
     var body: some View {
         NavigationStack {
-            VStack {
-                List {
-                    ForEach(sortedPlans) { plan in
-                        NavigationLink(value: plan.id) {
-                            PlanRowView(plan: plan)
-                                .padding(.vertical, 4)
-                        }
-                        .listRowSeparator(.hidden)
+            List {
+                ForEach(store.plans) { plan in
+                    let recs = plan.records
+                    let last = recs.max(by: { $0.date < $1.date })
+                    NavigationLink(value: plan.id) {
+                        PlanRowView(plan: plan, latest: last)
+                            .padding(.vertical, 4)
                     }
-                    .onDelete(perform: store.delete)
                 }
-                .listStyle(.insetGrouped)
+                .onDelete { indexSet in
+                    indexSet.compactMap { store.plans[$0] }.forEach(store.deletePlan)
+                }
             }
+            .listStyle(.insetGrouped)
             .navigationTitle("交易计划")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showAdd = true }) {
-                        Image(systemName: "plus")
-                    }
+                    Button(action: { showAddPlan = true }) { Image(systemName: "plus") }
                 }
             }
-            .sheet(isPresented: $showAdd) {
+            .sheet(isPresented: $showAddPlan) {
                 PlanEditView(store: store)
             }
-            .sheet(isPresented: $showMigration) {
-                if !migrationIndices.isEmpty {
-                    let idx = migrationIndices[currentMigration]
-                    PlanMigrationView(plan: store.plans[idx], store: store) {
+            .sheet(isPresented: $showMigrationSheet) {
+                if currentIndex < pendingMigrations.count {
+                    MigrationFormView(plan: pendingMigrations[currentIndex], store: store) {
                         advanceMigration()
                     }
                 }
             }
             .navigationDestination(for: UUID.self) { id in
-                if let index = store.plans.firstIndex(where: { $0.id == id }) {
-                    PlanDetailView(plan: $store.plans[index])
-                        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+                if let plan = store.plans.first(where: { $0.id == id }) {
+                    PlanDetailView(plan: plan, store: store)
                 }
             }
             .onAppear {
-                prepareMigration()
+                store.performDailyMigrations()
+                collectPendingMigrations()
             }
         }
     }
 
-    private func prepareMigration() {
-        let today = Calendar.current.startOfDay(for: Date())
-        migrationIndices = store.plans.indices.filter { store.plans[$0].date < today }
-        currentMigration = 0
-        showMigration = !migrationIndices.isEmpty
+    private func collectPendingMigrations() {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        pendingMigrations = store.plans.filter { plan in
+            guard let last = plan.records.max(by: { $0.date < $1.date }) else { return false }
+            return calendar.isDate(last.date, inSameDayAs: today) && last.actionToday == "无"
+        }
+        if !pendingMigrations.isEmpty {
+            currentIndex = 0
+            showMigrationSheet = true
+        }
     }
 
     private func advanceMigration() {
-        currentMigration += 1
-        if currentMigration >= migrationIndices.count {
-            showMigration = false
-            migrationIndices = []
-            currentMigration = 0
-            store.save()
+        currentIndex += 1
+        if currentIndex >= pendingMigrations.count {
+            showMigrationSheet = false
+            pendingMigrations = []
         }
     }
 }
 
 struct PlanListView_Previews: PreviewProvider {
     static var previews: some View {
-        PlanListView(store: TradePlanStore())
-            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+        PlanListView(store: PlanStore(context: PersistenceController.shared.container.viewContext))
     }
 }
