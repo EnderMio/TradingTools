@@ -8,14 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var model = RecapModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            StepEditor(title: "看新闻", text: $model.news)
+                .tabItem { Label("新闻", systemImage: "newspaper") }
+            StepEditor(title: "看大盘", text: $model.market)
+                .tabItem { Label("大盘", systemImage: "chart.line.uptrend.xyaxis") }
+            StepEditor(title: "看热点", text: $model.topic)
+                .tabItem { Label("热点", systemImage: "flame") }
+            StepEditor(title: "看持仓", text: $model.holdings)
+                .tabItem { Label("持仓", systemImage: "briefcase") }
+            StepEditor(title: "选股", text: $model.selection)
+                .tabItem { Label("选股", systemImage: "list.bullet.rectangle") }
+            StepEditor(title: "制定计划", text: $model.plan)
+                .tabItem { Label("计划", systemImage: "calendar") }
         }
-        .padding()
     }
 }
 
