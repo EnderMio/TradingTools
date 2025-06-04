@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BAB04F2E2DF00D2400606B9B /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = BAB04F2D2DF00D1E00606B9B /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		BAB04F112DF00D0900606B9B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		BAB04F032DF00D0700606B9B /* TradingTools.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TradingTools.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAB04F102DF00D0900606B9B /* TradingToolsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TradingToolsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAB04F1A2DF00D0900606B9B /* TradingToolsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TradingToolsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAB04F2D2DF00D1E00606B9B /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +80,7 @@
 		BAB04EFA2DF00D0700606B9B = {
 			isa = PBXGroup;
 			children = (
+				BAB04F2D2DF00D1E00606B9B /* .gitignore */,
 				BAB04F052DF00D0700606B9B /* TradingTools */,
 				BAB04F132DF00D0900606B9B /* TradingToolsTests */,
 				BAB04F1D2DF00D0900606B9B /* TradingToolsUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAB04F2E2DF00D2400606B9B /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
