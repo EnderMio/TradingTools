@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var planStore = TradePlanStore()
+    @StateObject private var planStore = PlanStore(context: PersistenceController.shared.container.viewContext)
     @State private var holdings: String = ""
     
     var body: some View {
