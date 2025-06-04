@@ -7,7 +7,6 @@ struct PlanEditView: View {
     @State private var direction: TradeDirection = .long
     @State private var entry: String = ""
     @State private var stopLoss: String = ""
-    @State private var takeProfit: String = ""
     @State private var notes: String = ""
 
     var body: some View {
@@ -23,8 +22,6 @@ struct PlanEditView: View {
                     TextField("入场价", text: $entry)
                         .keyboardType(.decimalPad)
                     TextField("止损价", text: $stopLoss)
-                        .keyboardType(.decimalPad)
-                    TextField("止盈价", text: $takeProfit)
                         .keyboardType(.decimalPad)
                 }
                 Section(header: Text("备注")) {
@@ -44,8 +41,8 @@ struct PlanEditView: View {
     }
 
     private func save() {
-        guard let entryP = Double(entry), let sl = Double(stopLoss), let tp = Double(takeProfit) else { return }
-        let plan = TradePlan(symbol: symbol, direction: direction, entryPrice: entryP, stopLoss: sl, takeProfit: tp, notes: notes)
+        guard let entryP = Double(entry), let sl = Double(stopLoss) else { return }
+        let plan = TradePlan(symbol: symbol, direction: direction, entryPrice: entryP, stopLoss: sl, notes: notes)
         store.add(plan)
         dismiss()
     }
