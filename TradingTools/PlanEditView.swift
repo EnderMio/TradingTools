@@ -7,7 +7,10 @@ struct PlanEditView: View {
     @State private var direction: TradeDirection = .long
     @State private var entry: String = ""
     @State private var stopLoss: String = ""
+    @State private var takeProfit: String = ""
+    @State private var actionTime: Date = Calendar.current.date(bySettingHour: 9, minute: 30, second: 0, of: .now) ?? .now
     @State private var notes: String = ""
+    @State private var date: Date = Calendar.current.date(byAdding: .day, value: 1, to: .now) ?? .now
 
     var body: some View {
         NavigationStack {
@@ -19,10 +22,13 @@ struct PlanEditView: View {
                             Text(dir.rawValue).tag(dir)
                         }
                     }
+                    DatePicker("日期", selection: $date, displayedComponents: .date)
+                    DatePicker("操作时间", selection: $actionTime, displayedComponents: .hourAndMinute)
                     TextField("入场价", text: $entry)
                         .keyboardType(.decimalPad)
                     TextField("止损价", text: $stopLoss)
                         .keyboardType(.decimalPad)
+                    TextField("止盈条件", text: $takeProfit)
                 }
                 Section(header: Text("备注")) {
                     TextField("备注", text: $notes, axis: .vertical)
@@ -42,7 +48,14 @@ struct PlanEditView: View {
 
     private func save() {
         guard let entryP = Double(entry), let sl = Double(stopLoss) else { return }
-        let plan = TradePlan(symbol: symbol, direction: direction, entryPrice: entryP, stopLoss: sl, notes: notes)
+        let plan = TradePlan(symbol: symbol,
+                             direction: direction,
+                             date: date,
+                             actionTime: actionTime,
+                             takeProfitCondition: takeProfit,
+                             entryPrice: entryP,
+                             stopLoss: sl,
+                             notes: notes)
         store.add(plan)
         dismiss()
     }

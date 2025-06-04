@@ -31,8 +31,11 @@ struct PlanDetailView: View {
                         Text(dir.rawValue).tag(dir)
                     }
                 }
+                DatePicker("日期", selection: $plan.date, displayedComponents: .date)
+                DatePicker("操作时间", selection: $plan.actionTime, displayedComponents: .hourAndMinute)
                 TextField("入场价", value: $plan.entryPrice, format: .number)
                 TextField("止损价", value: $plan.stopLoss, format: .number)
+                TextField("止盈条件", text: $plan.takeProfitCondition)
             }
             Section(header: Text("备注")) {
                 TextField("备注", text: $plan.notes, axis: .vertical)

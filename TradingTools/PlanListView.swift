@@ -4,6 +4,9 @@ struct PlanListView: View {
     @ObservedObject var store: TradePlanStore
     @State private var showAdd = false
     @State private var filter: PlanFilter = .all
+    @State private var migrationIndices: [Int] = []
+    @State private var currentMigration = 0
+    @State private var showMigration = false
 
     enum PlanFilter: String, CaseIterable, Identifiable {
         case all = "全部"
@@ -15,15 +18,16 @@ struct PlanListView: View {
     }
 
     private var filteredPlans: [TradePlan] {
+        let sorted = store.plans.sorted { $0.date < $1.date }
         switch filter {
         case .all:
-            return store.plans
+            return sorted
         case .pending:
-            return store.plans.filter { $0.status == .pending }
+            return sorted.filter { $0.status == .pending }
         case .open:
-            return store.plans.filter { $0.status == .open }
+            return sorted.filter { $0.status == .open }
         case .closed:
-            return store.plans.filter { $0.status == .closed }
+            return sorted.filter { $0.status == .closed }
         }
     }
 
@@ -61,12 +65,40 @@ struct PlanListView: View {
             .sheet(isPresented: $showAdd) {
                 PlanEditView(store: store)
             }
+            .sheet(isPresented: $showMigration) {
+                if !migrationIndices.isEmpty {
+                    let idx = migrationIndices[currentMigration]
+                    PlanMigrationView(plan: $store.plans[idx]) {
+                        advanceMigration()
+                    }
+                }
+            }
             .navigationDestination(for: UUID.self) { id in
                 if let index = store.plans.firstIndex(where: { $0.id == id }) {
                     PlanDetailView(plan: $store.plans[index])
                         .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 }
             }
+            .onAppear {
+                prepareMigration()
+            }
+        }
+    }
+
+    private func prepareMigration() {
+        let today = Calendar.current.startOfDay(for: Date())
+        migrationIndices = store.plans.indices.filter { store.plans[$0].date <= today }
+        currentMigration = 0
+        showMigration = !migrationIndices.isEmpty
+    }
+
+    private func advanceMigration() {
+        currentMigration += 1
+        if currentMigration >= migrationIndices.count {
+            showMigration = false
+            migrationIndices = []
+            currentMigration = 0
+            store.save()
         }
     }
 }
