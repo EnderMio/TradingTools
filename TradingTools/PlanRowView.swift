@@ -17,7 +17,6 @@ struct PlanRowView: View {
                 Text(plan.direction.rawValue)
                 Text("入 \(plan.entryPrice, specifier: \"%.2f\")")
                 Text("止损 \(plan.stopLoss, specifier: \"%.2f\")")
-                Text("止盈 \(plan.takeProfit, specifier: \"%.2f\")")
             }
             .font(.footnote)
             .foregroundColor(.secondary)
@@ -32,6 +31,6 @@ struct PlanRowView: View {
 
 struct PlanRowView_Previews: PreviewProvider {
     static var previews: some View {
-        PlanRowView(plan: TradePlan(symbol: "AAPL", direction: .long, entryPrice: 100, stopLoss: 90, takeProfit: 120, notes: ""))
+        PlanRowView(plan: TradePlan(symbol: "AAPL", direction: .long, entryPrice: 100, stopLoss: 90, notes: ""))
     }
 }

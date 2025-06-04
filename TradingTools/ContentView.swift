@@ -18,10 +18,17 @@ struct ContentView: View {
 
             StepEditor(title: "持仓", text: $holdings)
                 .tabItem { Label("持仓", systemImage: "briefcase") }
+
+            TradeRecordListView()
+                .tabItem { Label("记录", systemImage: "chart.bar") }
+
+            TradeLogListView()
+                .tabItem { Label("日志", systemImage: "book") }
         }
     }
 }
 
 #Preview {
     ContentView()
+        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }

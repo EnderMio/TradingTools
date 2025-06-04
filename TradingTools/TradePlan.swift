@@ -22,7 +22,6 @@ struct TradePlan: Identifiable, Codable {
     var direction: TradeDirection
     var entryPrice: Double
     var stopLoss: Double
-    var takeProfit: Double
     var notes: String
     var status: TradeStatus = .pending
 }
